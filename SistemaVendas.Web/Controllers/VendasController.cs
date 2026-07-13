@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaVendas.Infrastructure.Data;
-using SistemaVendas.Web.Models;
+using SistemaVendas.Domain.Entities;
 
 
 namespace SistemaVendas.Web.Controllers;
