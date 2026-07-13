@@ -19,4 +19,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SistemaVendas.Infrastructure\SistemaVendas.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

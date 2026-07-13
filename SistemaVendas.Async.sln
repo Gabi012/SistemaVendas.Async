@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaVendas.Web", "SistemaVendas.Web\SistemaVendas.Web.csproj", "{1A127977-C88D-4EBB-851D-D245C7C133DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaVendas.Infrastructure", "SistemaVendas.Infrastructure\SistemaVendas.Infrastructure.csproj", "{2D1A1407-36E8-47C8-AA5C-C515A524D9D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1A127977-C88D-4EBB-851D-D245C7C133DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A127977-C88D-4EBB-851D-D245C7C133DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A127977-C88D-4EBB-851D-D245C7C133DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D1A1407-36E8-47C8-AA5C-C515A524D9D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D1A1407-36E8-47C8-AA5C-C515A524D9D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D1A1407-36E8-47C8-AA5C-C515A524D9D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D1A1407-36E8-47C8-AA5C-C515A524D9D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
