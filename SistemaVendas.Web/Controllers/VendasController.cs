@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SistemaVendas.Web.Data;
+using SistemaVendas.Infrastructure.Data;
 using SistemaVendas.Web.Models;
 
 
