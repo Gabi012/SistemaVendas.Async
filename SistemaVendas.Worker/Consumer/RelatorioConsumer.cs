@@ -4,6 +4,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SistemaVendas.Infrastructure.Messages;
 using SistemaVendas.Infrastructure.RabbitMQ;
+using SistemaVendas.Worker.Services;
 
 
 namespace SistemaVendas.Worker.Consumers;
@@ -14,17 +15,27 @@ public class RelatorioConsumer
 
     private readonly RabbitMQSettings _settings;
 
+    private readonly IServiceScopeFactory _scopeFactory;
+
+
 
     public RelatorioConsumer(
-        RabbitMQSettings settings)
+        RabbitMQSettings settings,
+        IServiceScopeFactory scopeFactory)
     {
         _settings = settings;
+
+        _scopeFactory = scopeFactory;
     }
 
 
 
-    public async Task ConsumirAsync(CancellationToken cancellationToken)
+
+    public async Task ConsumirAsync(
+        CancellationToken cancellationToken)
     {
+
+
         var factory = new ConnectionFactory
         {
             HostName = _settings.HostName,
@@ -49,7 +60,6 @@ public class RelatorioConsumer
 
 
         await channel.QueueDeclareAsync(
-
             queue: _settings.QueueName,
 
             durable: true,
@@ -57,7 +67,6 @@ public class RelatorioConsumer
             exclusive: false,
 
             autoDelete: false
-
         );
 
 
@@ -70,45 +79,87 @@ public class RelatorioConsumer
 
         consumer.ReceivedAsync += async (sender, args) =>
         {
-            var body = args.Body.ToArray();
 
-            var json =
-                Encoding.UTF8.GetString(body);
+            try
+            {
 
-            var mensagem =
-                JsonSerializer.Deserialize
-                <GerarRelatorioMessage>(json);
+                var body =
+                    args.Body.ToArray();
 
 
-            Console.WriteLine("Mensagem recebida");
+
+                var json =
+                    Encoding.UTF8.GetString(body);
 
 
-            Console.WriteLine($"Relatório: {mensagem?.TipoRelatorio}");
+
+                var mensagem =
+                    JsonSerializer.Deserialize
+                    <GerarRelatorioMessage>(json);
 
 
-            await Processar(mensagem!);
 
-            await channel.BasicAckAsync(
-                args.DeliveryTag,
-                false);
+                if (mensagem == null)
+                    return;
+
+
+
+                Console.WriteLine(
+                    $"Recebido: {mensagem.TipoRelatorio}");
+
+
+
+                await Processar(mensagem);
+
+
+
+                await channel.BasicAckAsync(
+                    args.DeliveryTag,
+                    false);
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+
+
+                await channel.BasicNackAsync(
+                    args.DeliveryTag,
+                    false,
+                    true);
+
+            }
+
+
         };
+
+
 
 
         await channel.BasicConsumeAsync(
 
             queue: _settings.QueueName,
+
             autoAck: false,
+
             consumer: consumer
+
         );
 
-        Console.WriteLine("Consumer iniciado");
+
+
+        Console.WriteLine(
+            "Consumer iniciado");
+
 
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            await Task.Delay(1000);
-        }
 
+            await Task.Delay(1000);
+
+        }
 
     }
 
@@ -116,11 +167,33 @@ public class RelatorioConsumer
 
 
 
-    private async Task Processar(GerarRelatorioMessage mensagem)
+
+
+    private async Task Processar(
+        GerarRelatorioMessage mensagem)
     {
 
 
-        Console.WriteLine("Iniciando processamento...");
+        using var scope =
+            _scopeFactory.CreateScope();
+
+
+
+        var service =
+            scope.ServiceProvider
+            .GetRequiredService<RelatorioService>();
+
+
+
+        await service.AtualizarStatusAsync(
+            mensagem.RelatorioId,
+            "Processando");
+
+
+
+        Console.WriteLine(
+            "Processando relatório...");
+
 
 
         await Task.Delay(
@@ -128,9 +201,14 @@ public class RelatorioConsumer
 
 
 
-        Console.WriteLine("Relatório finalizado");
+        await service.AtualizarStatusAsync(
+            mensagem.RelatorioId,
+            "Concluído");
+
+
+        Console.WriteLine(
+            "Relatório concluído");
 
     }
-
 
 }

@@ -14,7 +14,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 
-builder.Services.AddSingleton<RabbitMQSettings>();
+builder.Services.Configure<RabbitMQSettings>(
+    builder.Configuration.GetSection("RabbitMQ"));
+
+
+builder.Services.AddSingleton(sp =>
+{
+    return sp.GetRequiredService<
+        Microsoft.Extensions.Options.IOptions<RabbitMQSettings>>()
+        .Value;
+});
+
+
 builder.Services.AddSingleton<RabbitMQProducer>();
 
 var app = builder.Build();

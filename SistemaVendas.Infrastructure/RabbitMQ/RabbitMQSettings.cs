@@ -3,24 +3,11 @@
 
 public class RabbitMQSettings
 {
-
-    public string HostName { get; set; }
-        = "127.0.0.1";
-
-
+    public string HostName { get; set; } = string.Empty;
     public int Port { get; set; }
-        = 5672;
+    public string UserName { get; set; } = string.Empty;
 
+    public string Password { get; set; } = string.Empty;
 
-    public string UserName { get; set; }
-        = "guest";
-
-
-    public string Password { get; set; }
-        = "guest";
-
-
-    public string QueueName { get; set; }
-        = "relatorios";
-
+    public string QueueName { get; set; } = string.Empty;
 }
