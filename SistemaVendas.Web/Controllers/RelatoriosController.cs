@@ -70,6 +70,7 @@ public class RelatoriosController : Controller
         _context.Relatorios.Add(relatorio);
 
         await _context.SaveChangesAsync();
+
         await _rabbit.PublicarAsync(
 
        new GerarRelatorioMessage
