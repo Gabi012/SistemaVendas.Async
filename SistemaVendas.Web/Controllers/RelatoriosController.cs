@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using SistemaVendas.Infrastructure.Messages;
 using SistemaVendas.Infrastructure.RabbitMQ;
-using SistemaVendas.Web.Data;
-using SistemaVendas.Web.Models;
+using SistemaVendas.Infrastructure.Data;
+using SistemaVendas.Domain.Entities;
 
 
 namespace SistemaVendas.Web.Controllers;
