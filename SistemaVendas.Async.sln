@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaVendas.Infrastructur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaVendas.Worker", "SistemaVendas.Worker\SistemaVendas.Worker.csproj", "{2BDB3A91-C3E0-45C9-8A4F-53AB562149FC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaVendas.Domain", "SistemaVendas.Domain\SistemaVendas.Domain.csproj", "{4D60CC55-D29C-47CC-9ED8-52E46CEDE291}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2BDB3A91-C3E0-45C9-8A4F-53AB562149FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BDB3A91-C3E0-45C9-8A4F-53AB562149FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BDB3A91-C3E0-45C9-8A4F-53AB562149FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D60CC55-D29C-47CC-9ED8-52E46CEDE291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D60CC55-D29C-47CC-9ED8-52E46CEDE291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D60CC55-D29C-47CC-9ED8-52E46CEDE291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D60CC55-D29C-47CC-9ED8-52E46CEDE291}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
