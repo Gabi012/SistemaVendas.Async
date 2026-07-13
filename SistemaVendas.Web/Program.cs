@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using SistemaVendas.Infrastructure.RabbitMQ;
 using SistemaVendas.Web.Data;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +13,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         .GetConnectionString("DefaultConnection"));
 });
 
+
+builder.Services.AddSingleton<RabbitMQSettings>();
+builder.Services.AddSingleton<RabbitMQProducer>();
 
 var app = builder.Build();
 

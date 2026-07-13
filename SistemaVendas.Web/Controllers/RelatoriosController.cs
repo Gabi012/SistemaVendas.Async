@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SistemaVendas.Infrastructure.Messages;
+using SistemaVendas.Infrastructure.RabbitMQ;
 using SistemaVendas.Web.Data;
 using SistemaVendas.Web.Models;
 
@@ -9,15 +11,18 @@ namespace SistemaVendas.Web.Controllers;
 
 public class RelatoriosController : Controller
 {
-
+    private readonly RabbitMQProducer _rabbit;
     private readonly AppDbContext _context;
 
 
 
     public RelatoriosController(
-        AppDbContext context)
+      AppDbContext context,
+      RabbitMQProducer rabbit)
     {
         _context = context;
+
+        _rabbit = rabbit;
     }
 
 
@@ -65,6 +70,16 @@ public class RelatoriosController : Controller
         _context.Relatorios.Add(relatorio);
 
         await _context.SaveChangesAsync();
+        await _rabbit.PublicarAsync(
+
+       new GerarRelatorioMessage
+       {
+           RelatorioId = relatorio.Id,
+
+           TipoRelatorio = relatorio.TipoRelatorio
+       }
+
+   );
 
         return RedirectToAction(nameof(Index));
 
