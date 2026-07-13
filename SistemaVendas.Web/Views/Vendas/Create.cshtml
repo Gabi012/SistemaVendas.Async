@@ -1,0 +1,52 @@
+﻿@model SistemaVendas.Web.Models.Venda
+
+
+<h1>Nova Venda</h1>
+
+
+<form asp-action="Create">
+
+
+	<div class="form-group">
+
+		<label>
+			Cliente
+		</label>
+
+		<input asp-for="Cliente"
+			   class="form-control" />
+
+	</div>
+
+
+
+	<div class="form-group">
+
+		<label>
+			Valor Total
+		</label>
+
+		<input asp-for="ValorTotal"
+			   class="form-control" />
+
+	</div>
+
+
+
+	<br />
+
+
+	<button class="btn btn-success">
+		Salvar
+	</button>
+
+
+	<a asp-action="Index"
+	   class="btn btn-secondary">
+
+		Voltar
+
+	</a>
+
+
+</form>

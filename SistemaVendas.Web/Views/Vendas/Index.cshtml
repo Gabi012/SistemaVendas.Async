@@ -1,0 +1,116 @@
+﻿@model IEnumerable<SistemaVendas.Web.Models.Venda>
+
+
+<h1>Vendas</h1>
+
+
+<p>
+	<a asp-action="Create"
+	   class="btn btn-primary">
+
+		Nova Venda
+
+	</a>
+</p>
+
+
+
+<table class="table">
+
+	<thead>
+
+		<tr>
+
+			<th>
+				Cliente
+			</th>
+
+
+			<th>
+				Valor
+			</th>
+
+
+			<th>
+				Data
+			</th>
+
+
+			<th>
+				Status
+			</th>
+
+
+			<th></th>
+
+		</tr>
+
+	</thead>
+
+
+
+	<tbody>
+
+
+		@foreach (var item in Model)
+		{
+
+			<tr>
+
+				<td>
+					@item.Cliente
+				</td>
+
+
+				<td>
+					@item.ValorTotal.ToString("C")
+				</td>
+
+
+				<td>
+					@item.DataVenda
+				</td>
+
+
+				<td>
+					@item.Status
+				</td>
+
+
+				<td>
+
+
+					<a asp-action="Edit"
+					   asp-route-id="@item.Id">
+						Editar
+					</a>
+
+
+					|
+
+					<a asp-action="Details"
+					   asp-route-id="@item.Id">
+						Detalhes
+					</a>
+
+
+					|
+
+					<a asp-action="Delete"
+					   asp-route-id="@item.Id">
+						Excluir
+					</a>
+
+
+				</td>
+
+
+			</tr>
+
+		}
+
+
+	</tbody>
+
+
+</table>
