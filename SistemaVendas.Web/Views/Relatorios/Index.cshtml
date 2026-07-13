@@ -1,0 +1,88 @@
+﻿@model IEnumerable<SistemaVendas.Web.Models.RelatorioSolicitacao>
+
+
+<h1>Relatórios</h1>
+
+
+<p>
+
+	<a asp-action="Solicitar"
+	   class="btn btn-primary">
+
+		Novo Relatório
+
+	</a>
+
+</p>
+
+
+
+<table class="table">
+
+
+	<thead>
+
+		<tr>
+
+			<th>
+				Tipo
+			</th>
+
+			<th>
+				Solicitado em
+			</th>
+
+			<th>
+				Status
+			</th>
+
+
+			<th>
+				Conclusão
+			</th>
+
+
+		</tr>
+
+	</thead>
+
+
+	<tbody>
+
+
+		@foreach (var item in Model)
+		{
+
+
+			<tr>
+
+				<td>
+					@item.TipoRelatorio
+				</td>
+
+
+				<td>
+					@item.DataSolicitacao
+				</td>
+
+
+				<td>
+					@item.Status
+				</td>
+
+
+				<td>
+					@item.DataConclusao
+				</td>
+
+
+			</tr>
+
+
+		}
+
+
+	</tbody>
+
+
+</table>
