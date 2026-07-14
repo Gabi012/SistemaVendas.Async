@@ -18,5 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<RelatorioSolicitacao> Relatorios { get; set; }
 
     public DbSet<Venda> Vendas { get; set; }
+    public DbSet<Notificacao> Notificacoes { get; set; }
+
 
 }

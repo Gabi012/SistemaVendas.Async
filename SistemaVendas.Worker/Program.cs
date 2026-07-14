@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SistemaVendas.Infrastructure.Data;
 using SistemaVendas.Infrastructure.RabbitMQ;
+using SistemaVendas.Infrastructure.Services;
 using SistemaVendas.Worker;
 using SistemaVendas.Worker.Consumers;
 using SistemaVendas.Worker.Services;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<RelatorioService>();
 builder.Services.AddScoped<GeradorRelatorioService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<NotificacaoPublisher>();
+builder.Services.AddScoped<NotificacaoService>();
 
 builder.Services.AddHostedService<Worker>();
 
