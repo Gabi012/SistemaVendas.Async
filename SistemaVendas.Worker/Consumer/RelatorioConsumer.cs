@@ -14,14 +14,12 @@ public class RelatorioConsumer
 {
 
     private readonly RabbitMQSettings _settings;
-
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly GeradorRelatorioService _gerador;
 
 
 
-    public RelatorioConsumer(
-        RabbitMQSettings settings,
-        IServiceScopeFactory scopeFactory)
+    public RelatorioConsumer(RabbitMQSettings settings,IServiceScopeFactory scopeFactory)
     {
         _settings = settings;
 
@@ -31,8 +29,7 @@ public class RelatorioConsumer
 
 
 
-    public async Task ConsumirAsync(
-        CancellationToken cancellationToken)
+    public async Task ConsumirAsync(CancellationToken cancellationToken)
     {
 
 
@@ -49,18 +46,13 @@ public class RelatorioConsumer
 
 
 
-        await using var connection =
-            await factory.CreateConnectionAsync();
+        await using var connection = await factory.CreateConnectionAsync();
+
+        await using var channel = await connection.CreateChannelAsync();
 
 
 
-        await using var channel =
-            await connection.CreateChannelAsync();
-
-
-
-        await channel.QueueDeclareAsync(
-            queue: _settings.QueueName,
+        await channel.QueueDeclareAsync(queue: _settings.QueueName,
 
             durable: true,
 
@@ -72,8 +64,7 @@ public class RelatorioConsumer
 
 
 
-        var consumer =
-            new AsyncEventingBasicConsumer(channel);
+        var consumer = new AsyncEventingBasicConsumer(channel);
 
 
 
@@ -83,19 +74,13 @@ public class RelatorioConsumer
             try
             {
 
-                var body =
-                    args.Body.ToArray();
+                var body = args.Body.ToArray();
+
+                var json =Encoding.UTF8.GetString(body);
 
 
 
-                var json =
-                    Encoding.UTF8.GetString(body);
-
-
-
-                var mensagem =
-                    JsonSerializer.Deserialize
-                    <GerarRelatorioMessage>(json);
+                var mensagem = JsonSerializer.Deserialize<GerarRelatorioMessage>(json);
 
 
 
@@ -103,19 +88,14 @@ public class RelatorioConsumer
                     return;
 
 
-
-                Console.WriteLine(
-                    $"Recebido: {mensagem.TipoRelatorio}");
-
+                Console.WriteLine($"Recebido: {mensagem.TipoRelatorio}");
 
 
                 await Processar(mensagem);
 
 
 
-                await channel.BasicAckAsync(
-                    args.DeliveryTag,
-                    false);
+                await channel.BasicAckAsync(args.DeliveryTag,false);
 
             }
             catch (Exception ex)
@@ -166,48 +146,41 @@ public class RelatorioConsumer
 
 
 
-
-
-
-    private async Task Processar(
-        GerarRelatorioMessage mensagem)
+    private async Task Processar(GerarRelatorioMessage mensagem)
     {
-
 
         using var scope =
             _scopeFactory.CreateScope();
 
 
-
-        var service =
+        var relatorioService =
             scope.ServiceProvider
             .GetRequiredService<RelatorioService>();
 
 
-
-        await service.AtualizarStatusAsync(
-            mensagem.RelatorioId,
-            "Processando");
-
+        var gerador =
+            scope.ServiceProvider
+            .GetRequiredService<GeradorRelatorioService>();
 
 
-        Console.WriteLine(
-            "Processando relatório...");
+        await relatorioService.AtualizarStatusAsync(mensagem.RelatorioId,"Processando");
 
+        try
+        {
 
+            var arquivo = await gerador.GerarAsync(mensagem.RelatorioId,mensagem.TipoRelatorio);
 
-        await Task.Delay(
-            TimeSpan.FromSeconds(10));
+            await relatorioService.FinalizarAsync(mensagem.RelatorioId,arquivo);
 
+        }
+        catch (Exception ex)
+        {
 
+            Console.WriteLine($"Erro: {ex.Message}");
 
-        await service.AtualizarStatusAsync(
-            mensagem.RelatorioId,
-            "Concluído");
+            await relatorioService.AtualizarStatusAsync(mensagem.RelatorioId,"Erro");
 
-
-        Console.WriteLine(
-            "Relatório concluído");
+        }
 
     }
 
