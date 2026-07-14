@@ -162,6 +162,10 @@ public class RelatorioConsumer
             scope.ServiceProvider
             .GetRequiredService<GeradorRelatorioService>();
 
+        var emailService =
+            scope.ServiceProvider
+            .GetRequiredService<EmailService>();
+
 
         await relatorioService.AtualizarStatusAsync(mensagem.RelatorioId,"Processando");
 
@@ -171,6 +175,13 @@ public class RelatorioConsumer
             var arquivo = await gerador.GerarAsync(mensagem.RelatorioId,mensagem.TipoRelatorio);
 
             await relatorioService.FinalizarAsync(mensagem.RelatorioId,arquivo);
+
+            await emailService.EnviarAsync(
+                    mensagem.EmailUsuario,
+                    "Relatório disponível",
+                    $"Seu relatório {mensagem.TipoRelatorio} foi gerado."
+
+);
 
         }
         catch (Exception ex)
