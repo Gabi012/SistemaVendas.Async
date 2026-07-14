@@ -71,13 +71,11 @@ public class RelatoriosController : Controller
 
         await _context.SaveChangesAsync();
 
-        await _rabbit.PublicarAsync(
-
-       new GerarRelatorioMessage
+        await _rabbit.PublicarAsync(new GerarRelatorioMessage
        {
            RelatorioId = relatorio.Id,
-
-           TipoRelatorio = relatorio.TipoRelatorio
+           TipoRelatorio = relatorio.TipoRelatorio,
+           EmailUsuario = "usuario@email.com"
        }
 
    );

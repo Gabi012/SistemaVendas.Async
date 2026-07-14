@@ -32,6 +32,7 @@ builder.Services.AddSingleton(sp =>
 builder.Services.AddSingleton<RelatorioConsumer>();
 builder.Services.AddScoped<RelatorioService>();
 builder.Services.AddScoped<GeradorRelatorioService>();
+builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddHostedService<Worker>();
 
