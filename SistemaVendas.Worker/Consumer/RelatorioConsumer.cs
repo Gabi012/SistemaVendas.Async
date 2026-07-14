@@ -52,7 +52,7 @@ public class RelatorioConsumer
 
 
 
-        await channel.QueueDeclareAsync(queue: _settings.QueueName,
+        await channel.QueueDeclareAsync(queue: _settings.QueueRelatorios,
 
             durable: true,
 
@@ -119,7 +119,7 @@ public class RelatorioConsumer
 
         await channel.BasicConsumeAsync(
 
-            queue: _settings.QueueName,
+            queue: _settings.QueueRelatorios,
 
             autoAck: false,
 
@@ -162,9 +162,14 @@ public class RelatorioConsumer
             scope.ServiceProvider
             .GetRequiredService<GeradorRelatorioService>();
 
+        var notificacao =
+           scope.ServiceProvider
+           .GetRequiredService<NotificacaoPublisher>();
+
         var emailService =
             scope.ServiceProvider
             .GetRequiredService<EmailService>();
+     
 
 
         await relatorioService.AtualizarStatusAsync(mensagem.RelatorioId,"Processando");
@@ -175,6 +180,16 @@ public class RelatorioConsumer
             var arquivo = await gerador.GerarAsync(mensagem.RelatorioId,mensagem.TipoRelatorio);
 
             await relatorioService.FinalizarAsync(mensagem.RelatorioId,arquivo);
+
+            await notificacao.PublicarAsync(
+                    new NotificacaoMessage
+                    {
+                        UsuarioId = Guid.Empty,
+                        RelatorioId = mensagem.RelatorioId,
+                        Mensagem = $"Seu relatório {mensagem.TipoRelatorio} está pronto."
+                     }
+
+  );
 
             await emailService.EnviarAsync(
                     mensagem.EmailUsuario,
