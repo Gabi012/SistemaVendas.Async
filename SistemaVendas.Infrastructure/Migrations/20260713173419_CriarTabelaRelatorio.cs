@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SistemaVendas.Web.Migrations
+namespace SistemaVendas.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class CriarTabelaRelatorio : Migration

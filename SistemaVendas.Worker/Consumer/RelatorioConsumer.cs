@@ -4,6 +4,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using SistemaVendas.Infrastructure.Messages;
 using SistemaVendas.Infrastructure.RabbitMQ;
+using SistemaVendas.Infrastructure.Services;
 using SistemaVendas.Worker.Services;
 
 
@@ -169,7 +170,10 @@ public class RelatorioConsumer
         var emailService =
             scope.ServiceProvider
             .GetRequiredService<EmailService>();
-     
+
+        var notificacaoService =
+       scope.ServiceProvider
+       .GetRequiredService<NotificacaoService>();
 
 
         await relatorioService.AtualizarStatusAsync(mensagem.RelatorioId,"Processando");
@@ -180,6 +184,14 @@ public class RelatorioConsumer
             var arquivo = await gerador.GerarAsync(mensagem.RelatorioId,mensagem.TipoRelatorio);
 
             await relatorioService.FinalizarAsync(mensagem.RelatorioId,arquivo);
+
+            var texto = $"Seu relatório {mensagem.TipoRelatorio} está pronto.";
+
+            await notificacaoService.CriarAsync(
+                    mensagem.UsuarioId,
+                    mensagem.RelatorioId,
+                    texto);
+
 
             await notificacao.PublicarAsync(
                     new NotificacaoMessage

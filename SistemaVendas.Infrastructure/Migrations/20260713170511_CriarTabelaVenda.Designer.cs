@@ -9,7 +9,7 @@ using SistemaVendas.Infrastructure.Data;
 
 #nullable disable
 
-namespace SistemaVendas.Web.Migrations
+namespace SistemaVendas.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260713170511_CriarTabelaVenda")]

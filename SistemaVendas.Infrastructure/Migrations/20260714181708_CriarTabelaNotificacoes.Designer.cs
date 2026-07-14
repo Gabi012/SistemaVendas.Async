@@ -9,11 +9,11 @@ using SistemaVendas.Infrastructure.Data;
 
 #nullable disable
 
-namespace SistemaVendas.Web.Migrations
+namespace SistemaVendas.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260713173419_CriarTabelaRelatorio")]
-    partial class CriarTabelaRelatorio
+    [Migration("20260714181708_CriarTabelaNotificacoes")]
+    partial class CriarTabelaNotificacoes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,34 @@ namespace SistemaVendas.Web.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SistemaVendas.Web.Models.RelatorioSolicitacao", b =>
+            modelBuilder.Entity("SistemaVendas.Domain.Entities.Notificacao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Lida")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("RelatorioId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notificacoes");
+                });
+
+            modelBuilder.Entity("SistemaVendas.Domain.Entities.RelatorioSolicitacao", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,7 +81,7 @@ namespace SistemaVendas.Web.Migrations
                     b.ToTable("Relatorios");
                 });
 
-            modelBuilder.Entity("SistemaVendas.Web.Models.Venda", b =>
+            modelBuilder.Entity("SistemaVendas.Domain.Entities.Venda", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
