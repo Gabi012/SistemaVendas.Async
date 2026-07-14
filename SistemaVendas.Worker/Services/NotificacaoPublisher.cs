@@ -2,18 +2,19 @@
 using System.Text.Json;
 using RabbitMQ.Client;
 using SistemaVendas.Infrastructure.Messages;
+using SistemaVendas.Infrastructure.RabbitMQ;
 
 
-namespace SistemaVendas.Infrastructure.RabbitMQ;
+namespace SistemaVendas.Worker.Services;
 
 
-public class RabbitMQProducer
+public class NotificacaoPublisher
 {
 
     private readonly RabbitMQSettings _settings;
 
 
-    public RabbitMQProducer(
+    public NotificacaoPublisher(
         RabbitMQSettings settings)
     {
         _settings = settings;
@@ -22,14 +23,17 @@ public class RabbitMQProducer
 
 
     public async Task PublicarAsync(
-        GerarRelatorioMessage message)
+        NotificacaoMessage message)
     {
 
         var factory = new ConnectionFactory
         {
             HostName = _settings.HostName,
+
             Port = _settings.Port,
+
             UserName = _settings.UserName,
+
             Password = _settings.Password
         };
 
@@ -46,7 +50,7 @@ public class RabbitMQProducer
 
         await channel.QueueDeclareAsync(
 
-            queue: _settings.QueueRelatorios,
+            queue: _settings.QueueNotificacoes,
 
             durable: true,
 
@@ -72,7 +76,7 @@ public class RabbitMQProducer
 
             exchange: string.Empty,
 
-            routingKey: _settings.QueueRelatorios,
+            routingKey: _settings.QueueNotificacoes,
 
             body: body
 
