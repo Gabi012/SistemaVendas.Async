@@ -2,11 +2,14 @@ using Microsoft.EntityFrameworkCore;
 using SistemaVendas.Infrastructure.RabbitMQ;
 using SistemaVendas.Infrastructure.Data;
 using SistemaVendas.Web.Hubs;
+using SistemaVendas.Web.BackgroundServices;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddSignalR();
+builder.Services.AddHostedService<NotificacaoConsumer>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -29,6 +32,7 @@ builder.Services.AddSingleton(sp =>
 
 
 builder.Services.AddSingleton<RabbitMQProducer>();
+
 
 var app = builder.Build();
 

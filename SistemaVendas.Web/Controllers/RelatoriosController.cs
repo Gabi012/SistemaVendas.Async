@@ -75,8 +75,9 @@ public class RelatoriosController : Controller
        {
            RelatorioId = relatorio.Id,
            TipoRelatorio = relatorio.TipoRelatorio,
-           EmailUsuario = "usuario@email.com"
-       }
+           EmailUsuario = "usuario@email.com",
+           UsuarioId = Guid.Parse("11111111-1111-1111-1111-111111111111")
+        }
 
    );
 

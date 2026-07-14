@@ -184,7 +184,7 @@ public class RelatorioConsumer
             await notificacao.PublicarAsync(
                     new NotificacaoMessage
                     {
-                        UsuarioId = Guid.Empty,
+                        UsuarioId = mensagem.UsuarioId,
                         RelatorioId = mensagem.RelatorioId,
                         Mensagem = $"Seu relatório {mensagem.TipoRelatorio} está pronto."
                      }
