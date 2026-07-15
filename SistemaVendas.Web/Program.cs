@@ -55,6 +55,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapHub<NotificacaoHub>("/notificacoes");
-
+app.MapHub<NotificacaoHub>("/hubs/notificacoes");
 app.Run();
