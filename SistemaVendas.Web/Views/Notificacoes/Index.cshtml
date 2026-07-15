@@ -1,0 +1,38 @@
+﻿@model IEnumerable<SistemaVendas.Web.Models.NotificacaoViewModel>
+
+
+<h2>Notificações</h2>
+
+
+<div id="listaNotificacoes">
+
+
+    @foreach (var item in Model)
+    {
+        <div class="card mb-2">
+
+            <div class="card-body">
+
+
+                <strong>
+                    @item.Mensagem
+                </strong>
+
+
+                <br />
+
+                <small>
+                    @item.DataCriacao
+                </small>
+
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <script src="~/js/notificacoes.js"></script>
+}
