@@ -11,4 +11,5 @@ public class NotificacaoViewModel
     public bool Lida { get; set; }
 
     public Guid? RelatorioId { get; set; }
+    public string? ArquivoGerado { get; set; }
 }

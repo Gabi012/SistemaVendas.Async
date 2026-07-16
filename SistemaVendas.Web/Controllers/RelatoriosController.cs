@@ -85,4 +85,28 @@ public class RelatoriosController : Controller
 
     }
 
+    public async Task<IActionResult> Download(Guid id)
+    {
+        var relatorio =
+            await _context.Relatorios
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (relatorio == null)
+            return NotFound();
+
+        if (string.IsNullOrWhiteSpace(relatorio.ArquivoGerado))
+            return BadRequest("Relatório ainda não foi gerado.");
+
+        if (!System.IO.File.Exists(relatorio.ArquivoGerado))
+            return NotFound("Arquivo não encontrado.");
+
+        var bytes =
+            await System.IO.File.ReadAllBytesAsync(relatorio.ArquivoGerado);
+
+        return File(
+            bytes,
+            "application/pdf",
+            Path.GetFileName(relatorio.ArquivoGerado));
+    }
+
 }

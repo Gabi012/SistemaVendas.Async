@@ -83,3 +83,29 @@ function adicionarNotificacaoNaTela(mensagem) {
     lista.prepend(card);
 
 }
+
+document.addEventListener("click", async function (e) {
+
+    if (!e.target.classList.contains("marcar-lida"))
+        return;
+
+    const card = e.target.closest(".notificacao");
+
+    const id = card.dataset.id;
+
+    const response = await fetch("/Notificacoes/MarcarComoLida?id=" + id,
+        {
+            method: "POST"
+        });
+
+    if (!response.ok)
+        return;
+
+    card.classList.remove("nao-lida");
+    card.classList.add("lida");
+
+    e.target.remove();
+
+    atualizarContador();
+
+});

@@ -1,38 +1,23 @@
-﻿@model IEnumerable<SistemaVendas.Web.Models.NotificacaoViewModel>
+﻿@model List<NotificacaoViewModel>
+@foreach (var item in Model)
+{
+    <div class="card mb-2 notificacao @(item.Lida ? "lida" : "nao-lida")"
+         data-id="@item.Id">
 
+        <div class="card-body">
 
-<h2>Notificações</h2>
+            <strong>@item.Mensagem</strong>
 
+            <br />
 
-<div id="listaNotificacoes">
+            <small>@item.DataCriacao</small>
 
+            <br />
 
-    @foreach (var item in Model)
-    {
-        <div class="card mb-2">
-
-            <div class="card-body">
-
-
-                <strong>
-                    @item.Mensagem
-                </strong>
-
-
-                <br />
-
-                <small>
-                    @item.DataCriacao
-                </small>
-
-
-            </div>
-
+            <button class="btn btn-sm btn-primary mt-2 marcar-lida">
+                Marcar como lida
+            </button>           
         </div>
-    }
 
-</div>
-
-@section Scripts {
-    <script src="~/js/notificacoes.js"></script>
+    </div>
 }
