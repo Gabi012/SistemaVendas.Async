@@ -1,7 +1,9 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using SistemaVendas.Infrastructure.Data;
 using SistemaVendas.Infrastructure.Messages;
 using SistemaVendas.Infrastructure.RabbitMQ;
 using SistemaVendas.Infrastructure.Services;
@@ -153,6 +155,9 @@ public class RelatorioConsumer
         using var scope =
             _scopeFactory.CreateScope();
 
+        var context =
+    scope.ServiceProvider
+    .GetRequiredService<AppDbContext>();
 
         var relatorioService =
             scope.ServiceProvider
@@ -175,6 +180,20 @@ public class RelatorioConsumer
        scope.ServiceProvider
        .GetRequiredService<NotificacaoService>();
 
+        var relatorio = await context.Relatorios
+                            .FirstOrDefaultAsync(x => x.Id == mensagem.RelatorioId);
+
+        if (relatorio == null)
+        {
+            Console.WriteLine("Relatório não encontrado.");
+            return;
+        }
+        if (relatorio.Status == "Cancelado")
+        {
+            Console.WriteLine($"Relatório {relatorio.Id} foi cancelado.");
+
+            return;
+        }
 
         await relatorioService.AtualizarStatusAsync(mensagem.RelatorioId,"Processando");
 
