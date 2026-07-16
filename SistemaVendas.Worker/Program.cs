@@ -21,6 +21,8 @@ builder.Services.AddDbContext<AppDbContext>(
 builder.Services.Configure<RabbitMQSettings>(
     builder.Configuration.GetSection("RabbitMQ"));
 
+builder.Services.AddSingleton<IRabbitMQConnectionManager,
+                              RabbitMQConnectionManager>();
 
 builder.Services.AddSingleton(sp =>
 {
