@@ -108,5 +108,31 @@ public class RelatoriosController : Controller
             "application/pdf",
             Path.GetFileName(relatorio.ArquivoGerado));
     }
+    [HttpPost]
+    public async Task<IActionResult> Cancelar(Guid id)
+    {
+        var relatorio =
+            await _context.Relatorios
+                .FirstOrDefaultAsync(x => x.Id == id);
 
+        if (relatorio == null)
+            return NotFound();
+
+        if (relatorio.Status != "Pendente")
+        {
+            TempData["Erro"] =
+                "Este relatório já está sendo processado ou foi concluído.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        relatorio.Status = "Cancelado";
+
+        await _context.SaveChangesAsync();
+
+        TempData["Sucesso"] =
+            "Relatório cancelado.";
+
+        return RedirectToAction(nameof(Index));
+    }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using SistemaVendas.Infrastructure.Data;
 using SistemaVendas.Infrastructure.Messages;
 using SistemaVendas.Infrastructure.RabbitMQ;
 using SistemaVendas.Infrastructure.Services;
@@ -18,13 +20,15 @@ public class RelatorioConsumer
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly GeradorRelatorioService _gerador;
 
+    private readonly IRabbitMQConnectionManager _manager;
 
 
-    public RelatorioConsumer(RabbitMQSettings settings,IServiceScopeFactory scopeFactory)
+    public RelatorioConsumer(RabbitMQSettings settings,IServiceScopeFactory scopeFactory, IRabbitMQConnectionManager manager)
     {
         _settings = settings;
 
         _scopeFactory = scopeFactory;
+        _manager = manager; 
     }
 
 
@@ -33,23 +37,8 @@ public class RelatorioConsumer
     public async Task ConsumirAsync(CancellationToken cancellationToken)
     {
 
-
-        var factory = new ConnectionFactory
-        {
-            HostName = _settings.HostName,
-
-            Port = _settings.Port,
-
-            UserName = _settings.UserName,
-
-            Password = _settings.Password
-        };
-
-
-
-        await using var connection = await factory.CreateConnectionAsync();
-
-        await using var channel = await connection.CreateChannelAsync();
+        await using var channel =
+            await _manager.CreateChannelAsync();
 
 
 
@@ -153,6 +142,9 @@ public class RelatorioConsumer
         using var scope =
             _scopeFactory.CreateScope();
 
+        var context =
+    scope.ServiceProvider
+    .GetRequiredService<AppDbContext>();
 
         var relatorioService =
             scope.ServiceProvider
@@ -175,6 +167,20 @@ public class RelatorioConsumer
        scope.ServiceProvider
        .GetRequiredService<NotificacaoService>();
 
+        var relatorio = await context.Relatorios
+                            .FirstOrDefaultAsync(x => x.Id == mensagem.RelatorioId);
+
+        if (relatorio == null)
+        {
+            Console.WriteLine("Relatório não encontrado.");
+            return;
+        }
+        if (relatorio.Status == "Cancelado")
+        {
+            Console.WriteLine($"Relatório {relatorio.Id} foi cancelado.");
+
+            return;
+        }
 
         await relatorioService.AtualizarStatusAsync(mensagem.RelatorioId,"Processando");
 
