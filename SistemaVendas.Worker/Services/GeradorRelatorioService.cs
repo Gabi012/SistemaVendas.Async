@@ -26,8 +26,15 @@ namespace SistemaVendas.Worker.Services
             var nomeArquivo = $"relatorio_{relatorioId}.csv";
 
             var caminho = Path.Combine(pasta, nomeArquivo);
+            // Conteúdo fictício (não é um PDF válido)
+            var conteudo = $"""
+            Relatório: {tipoRelatorio}
 
-            await File.WriteAllTextAsync(caminho, "Relatório de vendas gerado");
+            Id: {relatorioId}
+
+            Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm:ss}
+            """;
+            await File.WriteAllTextAsync(caminho, conteudo);
 
             Console.WriteLine(
             $"Arquivo criado: {caminho}");

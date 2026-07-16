@@ -30,18 +30,19 @@ public class NotificacoesController : Controller
 
 
         var notificacoes = await _context.Notificacoes
-            .Where(x =>x.UsuarioId == usuarioId).OrderByDescending(x => x.DataCriacao)
+            .Where(x => x.UsuarioId == usuarioId)
+            .OrderByDescending(x => x.DataCriacao)
             .Select(x => new NotificacaoViewModel
             {
                 Id = x.Id,
-
                 Mensagem = x.Mensagem,
-
                 DataCriacao = x.DataCriacao,
-
                 Lida = x.Lida,
-
-                RelatorioId = x.RelatorioId
+                RelatorioId = x.RelatorioId,
+                ArquivoGerado = _context.Relatorios
+                    .Where(r => r.Id == x.RelatorioId)
+                    .Select(r => r.ArquivoGerado)
+                    .FirstOrDefault()
             })
             .ToListAsync();
 
@@ -68,5 +69,21 @@ public class NotificacoesController : Controller
         return Json(total);
 
     }
+    [HttpPost]
+    public async Task<IActionResult> MarcarComoLida(Guid id)
+    {
+        var notificacao =
+            await _context.Notificacoes
+                .FirstOrDefaultAsync(x => x.Id == id);
 
+        if (notificacao == null)
+            return NotFound();
+
+        notificacao.Lida = true;
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
+  
 }

@@ -59,8 +59,6 @@
 				<td>
 					@item.TipoRelatorio
 				</td>
-
-
 				<td>
 					@item.DataSolicitacao
 				</td>
@@ -74,8 +72,19 @@
 				<td>
 					@item.DataConclusao
 				</td>
+				<td>
+				@if (!string.IsNullOrWhiteSpace(item.ArquivoGerado))
+				{
+					<a class="btn btn-success btn-sm mt-2"
+					   asp-controller="Relatorios"
+					   asp-action="Download"
+					   asp-route-id="@item.Id">
 
+						📄 Baixar relatório
 
+					</a>
+				}
+				</td>
 			</tr>
 
 
